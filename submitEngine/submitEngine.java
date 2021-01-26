@@ -18,8 +18,7 @@ import com.submitEngine.domain.SubmitData;
 @RestController
 public class submitEngine {
 	
-	ArrayBlockingQueue<Integer> waitQueue = new ArrayBlockingQueue(6);
-	Queue<Integer> engineQueue = new LinkedList<Integer>();
+	
 	
 	public ResponseEntity<String> submitEngine(int SubNum, int Pnum, Object Pcode) throws InterruptedException {
 		
@@ -28,17 +27,18 @@ public class submitEngine {
 		submitD.setPnum(Pnum);
 		submitD.setPcode(Pcode);
 		
-		/* ¿ÜºÎ¿¡ Ãß°¡
-		 * 
-		 * 
+		/* ì™¸ë¶€ì— ì¶”ê°€
+		 * ArrayBlockingQueue<Integer> waitQueue = new ArrayBlockingQueue(6);
+		 * Queue<Integer> engineQueue = new LinkedList<Integer>();
+		 *
 		 * engineQueue.offer(1); engineQueue.offer(2); engineQueue.offer(3);
 		 * engineQueue.offer(4); engineQueue.offer(5); engineQueue.offer(6);
 		 */
 		
-		// »ç¿ë°¡´ÉÇÑ ¼­¹ö°¡ ¾ø´Â °æ¿ì ´ë±â
-		//waitQueue.put(1);
+		// ì‚¬ìš©ê°€ëŠ¥í•œ ì„œë²„ê°€ ì—†ëŠ” ê²½ìš° ëŒ€ê¸°
+		waitQueue.put(1);
 		
-		int servNum = 1;//engineQueue.poll();
+		int servNum = engineQueue.poll();
 		String url = "http://localhost:8080/" + servNum;
 		
 		HttpHeaders headers = new HttpHeaders();
