@@ -48,7 +48,7 @@ public class SubmitEngine {
 			try {
 				request = new HttpEntity<>(new Gson().toJson(e),header);
 				log.info("HttpEntity : " + request);
-				res = rt.exchange("http://localhost:8080/spring/submitEngine?SubNum={SubNum}&Pnum={Pnum}&Pcode={Pcode}",HttpMethod.POST,request,String.class,SubNum,Pnum,Pcode);
+				res = rt.exchange("http://localhost:8080",HttpMethod.GET,request,String.class);
 			}catch(HttpStatusCodeException err) {
 				log.error(err);
 			}
