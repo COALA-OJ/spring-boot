@@ -44,7 +44,7 @@ public class HomeController {
 	
 	
 	@RequestMapping(value = "/home", method = RequestMethod.GET)
-	@CrossOrigin("*")
+	@CrossOrigin("*") 
 	public String home() {
 		return "home";
 	}
