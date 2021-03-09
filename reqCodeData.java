@@ -11,7 +11,6 @@ import org.springframework.web.client.RestTemplate;
 
 @RestController
 public class reqCodeData {
-
 	public ResponseEntity<String> reqCodeData(String subNum){
 
         MultiValueMap<String, String> params = new LinkedMultiValueMap<>();
@@ -23,8 +22,7 @@ public class reqCodeData {
 
         RestTemplate rt = new RestTemplate();
         String url = " ";
-        ResponseEntity<String> response = rt.exchange(url,HttpMethod.POST,entity, String.class);
+        ResponseEntity<String> response = rt.exchange(url, HttpMethod.POST, entity, String.class);
 
         return response;
-	
 }
