@@ -32,12 +32,12 @@ public class SignUpProc {
 		Object incodedID = js.get("ID").toString();
 		System.out.println(js.toString());
 		
-		//ResponseEntity<String> fresp = isIDUnique(incodedID);
-		//JSONObject jsmain = (JSONObject) jp.parse(fresp.getBody().toString());
-		JSONObject jsmain = new JSONObject();
-        jsmain.put("ID", "True");
-        String jsstr = jsmain.toJSONString();
-        System.out.println(jsstr);
+		ResponseEntity<String> fresp = isIDUnique(incodedID);
+		JSONObject jsmain = (JSONObject) jp.parse(fresp.getBody().toString());
+		//JSONObject jsmain = new JSONObject();
+        	//jsmain.put("ID", "True");
+        	String jsstr = jsmain.toJSONString();
+        	System.out.println(jsstr);
 		return ResponseEntity.ok(jsstr);
 	}
 	
@@ -50,7 +50,7 @@ public class SignUpProc {
 		// make Entity
 		HttpEntity<MultiValueMap<String, String>> entity = new HttpEntity(params, headers); 
 		RestTemplate rt = new RestTemplate();
-		String url = furl+"/flask_Submit";
+		String url = "192.168.0.11:5000/id_check";
 		return rt.exchange(url, HttpMethod.POST, entity, String.class);
 	}
 	
