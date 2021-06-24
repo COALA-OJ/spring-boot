@@ -34,7 +34,11 @@ public class SignUpProc {
 		
 		//ResponseEntity<String> fresp = isIDUnique(incodedID);
 		//JSONObject jsmain = (JSONObject) jp.parse(fresp.getBody().toString());
-		return ResponseEntity.ok("True");
+		JSONObject jsmain = new JSONObject();
+        jsmain.put("ID", "True");
+        String jsstr = jsmain.toJSONString();
+        System.out.println(jsstr);
+		return ResponseEntity.ok(jsstr);
 	}
 	
 	public ResponseEntity<String> isIDUnique(Object incodedID){

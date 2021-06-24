@@ -13,6 +13,7 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.util.LinkedMultiValueMap;
 import org.springframework.util.MultiValueMap;
 import org.springframework.web.bind.annotation.CrossOrigin;
+import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.RestController;
@@ -25,9 +26,14 @@ public class ProblemList {
 	
 	@RequestMapping(value = "/spring/problemdata", method = RequestMethod.GET)
 	@CrossOrigin("*")
-	public ResponseEntity<String> center(HttpServletResponse response) throws ParseException {
+	public ResponseEntity<String> center(@RequestBody String body) throws ParseException {
+        JSONParser jp = new JSONParser();
+        JSONObject js = (JSONObject) jp.parse(body);
+        String ID = js.get("ID").toString();
+        System.out.println(ID);
+		
 		// get Problem data from Flask
-		ResponseEntity<String> resp = reqUserInfo();
+		ResponseEntity<String> resp = reqUserInfo(ID);
 		JSONParser UserSolvInfo = new JSONParser();
 		JSONArray USIob = (JSONArray) UserSolvInfo.parse(resp.getBody().toString());
 		JSONArray ja = new JSONArray();
@@ -58,10 +64,13 @@ public class ProblemList {
 		return js;
 	}
 	
-	public ResponseEntity<String> reqUserInfo() {
+	public ResponseEntity<String> reqUserInfo(String id) {
 		MultiValueMap<String, String> params = new LinkedMultiValueMap<>();
+		params.add("ID", id);
+		
 		HttpHeaders headers = new HttpHeaders();
 		headers.add("Content-Type", "application/json");
+		
 		HttpEntity<MultiValueMap<String, String>> entity = new HttpEntity<>(params, headers); 
 		RestTemplate rt = new RestTemplate();
 		ResponseEntity<String> response = rt.exchange(furl, HttpMethod.GET, entity, String.class);

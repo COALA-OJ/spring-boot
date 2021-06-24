@@ -1,6 +1,7 @@
 package com.webb.web;
 
 import java.io.UnsupportedEncodingException;
+import java.lang.instrument.Instrumentation;
 import java.util.concurrent.ArrayBlockingQueue;
 
 import org.json.simple.JSONArray;
@@ -30,6 +31,8 @@ public class SubmitCode {
 	final static int capacity = 1;
 	static int curengine = 0;
 	static ArrayBlockingQueue<Integer> enq = new ArrayBlockingQueue<Integer>(capacity);
+	static JSONParser jp = new JSONParser();
+	static Instrumentation inst;
 	
 	@RequestMapping(value = "/spring/submitcode", produces = "application/json; charset=utf8", method = RequestMethod.POST)
 	@CrossOrigin("*")
@@ -38,12 +41,14 @@ public class SubmitCode {
 		// from React
 		JSONParser jp = new JSONParser();
 		JSONObject js = body;
+		String ID = js.get("ID").toString();
 		String Pnum = js.get("Pnum").toString();
 		Object Pcode = js.get("code");
+		long Codesize = inst.getObjectSize(Pcode);
 		System.out.println(js.toString());
 		
 		//to Engine, Flask
-		ResponseEntity<String> fresp1 = submitCode(SubmitNum, Integer.parseInt(Pnum));
+		ResponseEntity<String> fresp1 = submitCode(ID ,SubmitNum, Integer.parseInt(Pnum));
 		int tc_cnt=5;
 		//cycle();
 		System.out.println("current engine number: " + curengine);
@@ -51,7 +56,10 @@ public class SubmitCode {
 		ResponseEntity<String> eresp = submitEngine(Integer.toString(SubmitNum), Pnum, tc_cnt, Pcode);
 		//enq.poll();
 		//System.out.println("engine response: " + eresp.getBody().toString());
-		String result = eresp.getBody().toString();
+		JSONObject ejson = (JSONObject) jp.parse(eresp.getBody().toString());
+		String result = ejson.get("Result").toString();
+		String time = ejson.get("Time").toString();
+		String memory = ejson.get("Memory").toString();
 		ResponseEntity<String> fresp2 = receiveResult(Integer.toString(SubmitNum), result);
 		
 		// response to React
@@ -68,9 +76,10 @@ public class SubmitCode {
 	}
 	
 	
-	public ResponseEntity<String> submitCode(int SubNum, int Pnum) {
+	public ResponseEntity<String> submitCode(String ID, int SubNum, int Pnum) {
 		// make Body
-		MultiValueMap<String, Integer> params = new LinkedMultiValueMap<>();
+		MultiValueMap<String, Object> params = new LinkedMultiValueMap<>();
+		params.add("ID", ID);
 		params.add("SubNum", SubNum);
 		params.add("Pnum", Pnum);
 		System.out.println("Flask data: "+params.toString());

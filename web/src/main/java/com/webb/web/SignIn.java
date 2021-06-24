@@ -1,6 +1,11 @@
 package com.webb.web;
 
 import java.io.UnsupportedEncodingException;
+import java.lang.reflect.Member;
+import java.security.Provider.Service;
+
+import javax.servlet.http.HttpServletRequest;
+import javax.servlet.http.HttpSession;
 
 import org.json.simple.JSONObject;
 import org.json.simple.parser.JSONParser;
@@ -17,6 +22,7 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.RestController;
 import org.springframework.web.client.RestTemplate;
+import org.springframework.web.servlet.ModelAndView;
 
 @RestController
 public class SignIn {
@@ -38,8 +44,37 @@ public class SignIn {
 		//ResponseEntity<String> fresp = reqSignIn(incodedID, incodedPwd);
 		//JSONObject jsmain = (JSONObject) jp.parse(fresp.getBody().toString());
 		JSONObject jsmain = new JSONObject();
-		jsmain.put("Name", "이병훈");
+		jsmain.put("Result", "true");
+		jsmain.put("Name", "");
+		System.out.println(jsmain.toJSONString());
 		return ResponseEntity.ok(jsmain.toJSONString());
+	}
+	
+	@RequestMapping(value = "/auth/check", produces = "application/json; charset=utf8", method = RequestMethod.POST)
+	@CrossOrigin("*")
+	public ModelAndView test1(HttpServletRequest req, @RequestBody JSONObject body) {
+		System.out.println(1);
+		HttpSession session = req.getSession();
+
+		session.setAttribute("member", body);
+		System.out.println(body.toJSONString());
+		
+		ModelAndView mav = new ModelAndView();
+		mav.addObject("thumbnail", body);
+		mav.addObject("username", "null");
+		mav.setViewName("/member/modifyOk");
+		System.out.println(mav.toString());
+		return mav;
+		
+	}
+	
+	@RequestMapping(value = "/auth/logout", produces = "application/json; charset=utf8", method = RequestMethod.POST)
+	@CrossOrigin("*")
+	public String test2(HttpServletRequest req, @RequestBody JSONObject body) {
+		HttpSession session = req.getSession();
+		
+		session.invalidate();
+		return "member/removeOK";
 	}
 	
 	public ResponseEntity<String> reqSignIn(Object incodedID, Object incodedPwd){
@@ -52,7 +87,8 @@ public class SignIn {
 		// make Entity
 		HttpEntity<MultiValueMap<String, String>> entity = new HttpEntity(params, headers); 
 		RestTemplate rt = new RestTemplate();
-		String url = furl+"/flask_Submit";
+		String url = "http://210.117.181.103:1234"+"/Login";
+		System.out.println(url);
 		return rt.exchange(url, HttpMethod.POST, entity, String.class);
 	}
 }
