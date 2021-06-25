@@ -180,12 +180,15 @@ Flask -> Spring
 
 #### Response Data Form
 	{
-		Pnum : [문제 번호]
-		Pname : [문제 이름]
-		Solved : [풀이 여부(T, F, Null)]
-		Pcond : [시간 제한, 메모리]
-		Pdetail : [내용, input 조건, output 조건]
-		Pinout : [예시 input, 예시 output]
+		Result : true/false, // 문제 번호 존재 여부
+		Pnum : [문제 번호],
+		Pname : [문제 이름],
+		Solved : [풀이 여부(T, F, Null)],
+		Pcond : [시간 제한, 메모리],
+		Pdetail : [내용, input 조건, output 조건],
+		Pinout : [{예시1 input, 예시1 output}, {예시2 input, 예시2 output}, ...],
+		Pacrate : [0, 0]
+		
 	}
 	
 Spring -> React
@@ -194,12 +197,14 @@ React의 요청에 따라 Flask에서 받아온 데이터를 info라는 json arr
 #### Response Data Form
 	{
 		info : [{
-			Pnum : [문제 번호]
-			Pname : [문제 이름]
-			Solved : [풀이 여부(T, F, Null)]
-			Pcond : [시간 제한, 메모리]
-			Pdetail : [내용, input 조건, output 조건]
-			Pinout : [예시 input, 예시 output]
+			Result : true/false, // 문제 번호 존재 여부
+			Pnum : [문제 번호],
+			Pname : [문제 이름],
+			Solved : [풀이 여부(T, F, Null)],
+			Pcond : [시간 제한, 메모리],
+			Pdetail : [내용, input 조건, output 조건],
+			Pinout : [예시 input, 예시 output],
+			Pacrate : [0, 0]
 		}]
 	}	
 
